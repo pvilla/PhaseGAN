@@ -24,7 +24,7 @@ class ParamOptions():
         parser.add_argument('--lambda_FSCA', type=float, default=10.0, help='weight for Fourier ring correlation loss A')
         parser.add_argument('--lambda_FSCB', type=float, default=10.0, help='weight for Fourier ring correlation loss B')
         parser.add_argument('--lambda_A', type=float, default=20.0, help='weight for cycle consistency loss between real_A and rec_A')
-        parser.add_argument('--lambda_B', type=float, default=120.0, help='weight for cycle consistency loss between real_B and rec_B')
+        parser.add_argument('--lambda_B', type=float, default=30.0, help='weight for cycle consistency loss between real_B and rec_B')
         parser.add_argument('--no_pretrain', action='store_true', help='no pretrain for the generator, by default it is pretrained with vgg11')
         parser.add_argument('--isTest', action='store_true', help='not train the model')
         parser.add_argument('--lr_g', type=float, default=0.0002, help='initial learning rate for the generator')
