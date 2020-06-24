@@ -16,9 +16,11 @@ if __name__ == '__main__':
             model.print_current_losses(epoch,i,losses)
             if i%100 ==99:
                 model.visual_iter(epoch,i)
+        """
         with torch.no_grad():
             test_count = 0
             for i,test_data in enumerate(model.test_loader):
                 model.set_input(test_data)
                 model.forward()
                 model.visual_iter(epoch,i)
+         """
