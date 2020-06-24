@@ -281,6 +281,7 @@ class TrainModel(ABC):
         self.rec_B_ph, self.rec_B_rc = self.standard_channelsB_basic(self.rec_B)
 
     def optimization(self):
+        self.optimizer_G.zero_grad()
         self.forward()
         self.set_requires_grad([self.netD_A, self.netD_B], True)
         self.optimizer_D.zero_grad()
