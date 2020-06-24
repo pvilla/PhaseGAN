@@ -41,7 +41,6 @@ class TrainModel(ABC):
         self.criterionCycle = nn.L1Loss()
         self.isTrain = not opt.isTest
         self.adjust_lr_epoch = opt.adjust_lr_epoch
-        self.r_index = torch.randperm(self.batch_size)
         self.log_note = opt.log_note
         self.save_run = F"{self.save_path}/{self.run_name}"
         self.save_log = F"{self.save_run}/log.txt"
@@ -136,6 +135,7 @@ class TrainModel(ABC):
         self.init_model()
 
     def set_input(self,input):
+        self.r_index = torch.randperm(self.batch_size)
         self.images, self.reals,self.imags = [input[i].to(self.device,dtype=torch.float) for i in range(3)]
         self.real_A = (self.images.to(self.device) - self.images_mean)/self.images_std
         self.real_B_re_rc = self.reals[self.r_index][:, :].to(self.device)
