@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-from numpy.fft import fft2,ifft2,ifftshift,fftshift
 
 class Propagator():
     def __init__(self,opt):
