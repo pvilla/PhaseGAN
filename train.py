@@ -16,7 +16,7 @@ if __name__ == '__main__':
                 model.print_current_losses(epoch,i,losses)
             if i % opt.save_cycleplot_freq_iter == opt.save_cycleplot_freq_iter -1:
                 model.visual_iter(epoch,i)
-        if epoch % opt.val_test_freq_epoch == opt.save_val_freq_epoch -1:
+        if epoch % opt.save_val_freq_epoch == opt.save_val_freq_epoch -1:
             with torch.no_grad():
                 for k,test_data in enumerate(model.test_loader):
                     model.val_input(test_data)
