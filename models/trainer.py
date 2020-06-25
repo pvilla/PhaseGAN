@@ -1,11 +1,11 @@
 import itertools
-from torch import nn, tensor
+from torch import nn
 import torchvision.transforms as transforms
 from collections import OrderedDict
-from abc import ABC, abstractmethod
+from abc import ABC
 from models.networks import PRNet
 from models.prop import Propagator
-from models.discriminator import Discriminator,NLayerDiscriminator
+from models.discriminator import NLayerDiscriminator
 from models.initialization import init_weights, weights_init
 from dataset.Dataset2channel import *
 import matplotlib.pyplot as plt
@@ -41,6 +41,7 @@ class TrainModel(ABC):
         self.criterionCycle = nn.L1Loss()
         self.isTrain = not opt.isTest
         self.adjust_lr_epoch = opt.adjust_lr_epoch
+
         self.log_note = opt.log_note
         self.save_run = F"{self.save_path}/{self.run_name}"
         self.save_log = F"{self.save_run}/log.txt"
@@ -144,6 +145,14 @@ class TrainModel(ABC):
         self.real_B = self.standard_channels_realB()
         self.real_B_rc = torch.stack((self.real_B_re_rc, self.real_B_im_rc), -1)
 
+    def val_input(self,input):
+        self.images, self.reals, self.imags = [input[i].to(self.device, dtype=torch.float) for i in range(3)]
+        self.real_A = (self.images.to(self.device) - self.images_mean) / self.images_std
+        self.real_B_re_rc = self.reals.to(self.device)
+        self.real_B_im_rc = self.imags.to(self.device)
+        self.real_B_ph = torch.atan2(self.real_B_im_rc, self.real_B_re_rc).unsqueeze(1)
+        self.real_B = self.standard_channels_realB()
+        self.real_B_rc = torch.stack((self.real_B_re_rc, self.real_B_im_rc), -1)
 
     def standard_channels_realB(self):
         real_B_re = (self.real_B_re_rc - self.reals_mean) / self.reals_std
@@ -195,9 +204,8 @@ class TrainModel(ABC):
         My_FRCloss = torch.mean((FRCm) ** 2)
         return My_FRCloss
 
-    def plot_cycle(self, img_idx, epoch,i, layer=0, test=False, plot_phase=True):
+    def plot_cycle(self, img_idx,save_name, layer=0, test=False, plot_phase=True):
         """set layer to 1 and plot_phase to False to plot imag channel"""
-        save_name = '{:03d}epoch_{:04d}step'.format(epoch + 1, i + 1)
         img_list = ['real_A', 'fake_B', 'prop_A', 'rec_A', 'real_B', 'prop_B', 'fake_A', 'rec_B']
         if plot_phase is True:
             img_list[1], img_list[4], img_list[7] = [img_list[i] + '_ph' for i in [1, 4, 7]]
@@ -281,7 +289,6 @@ class TrainModel(ABC):
         self.rec_B_ph, self.rec_B_rc = self.standard_channelsB_basic(self.rec_B)
 
     def optimization(self):
-        self.optimizer_G.zero_grad()
         self.forward()
         self.set_requires_grad([self.netD_A, self.netD_B], True)
         self.optimizer_D.zero_grad()
@@ -289,31 +296,15 @@ class TrainModel(ABC):
         self.loss_D_B = self.backward_D(self.netD_B, self.real_A, self.fake_A)
         self.optimizer_D.step()
         self.set_requires_grad([self.netD_A, self.netD_B], False)
+        self.optimizer_G.zero_grad()
         self.backward_G()
         self.optimizer_G.step()
 
-    # def get_images(self):
-    #     """Return traning losses / errors. train.py will print out these errors on console, and save them to a file"""
-    #     errors_list = OrderedDict()
-    #     for name in self.img_names:
-    #         if isinstance(name, str):
-    #             errors_list[name] =tensor(
-    #                 getattr(self, 'loss_' + name))  # float(...) works for both scalar tensor and float number
-    #     return errors_list
 
     def write_to_stat(self, epoch,iter):
         with open(self.save_stats, "a+") as f:
             f.write('\n -------------------------------------------------------\nEpoch [{}/{}], Step [{}/{}]\n'.format(
                 epoch + 1, self.num_epochs, iter + 1, self.total_step))
-            # print_numpy_to_log(real_A.detach().cpu().numpy(), f, 'real_A')
-            # print_numpy_to_log(real_B.detach().cpu().numpy(), f, 'real_B')
-            # print_numpy_to_log(fake_A.detach().cpu().numpy(), f, 'fake_A')
-            # print_numpy_to_log(fake_B.detach().cpu().numpy(), f, 'fake_B')
-            # print_numpy_to_log(fake_A.detach().cpu().numpy(), f, 'prop_A')
-            # print_numpy_to_log(fake_B.detach().cpu().numpy(), f, 'prop_B')
-            # print_numpy_to_log(rec_A.detach().cpu().numpy(), f, 'rec_A')
-            # print_numpy_to_log(rec_B.detach().cpu().numpy(), f, 'rec_B')
-            #
             for i in range(len(self.img_names)):
                 self.print_numpy_to_log(getattr(self,self.img_names[i]).detach().cpu().numpy(), f, self.img_names[i])
 
@@ -335,11 +326,16 @@ class TrainModel(ABC):
         print('%s:  mean = %3.3f, min = %3.3f, max = %3.3f, median = %3.3f, std=%3.3f' % (note,np.mean(x), np.min(x),np.max(x),np.median(x), np.std(x)),file=f)
 
     def visual_iter(self,epoch,iter):
-        # self.write_to_stat(epoch,iter)
-        self.plot_cycle(0, epoch, iter)
-    # def save_models(self):
-    #
-    #     self.save_model('netG_A', folder_name, epoch + 1, netG_A, optimizer_G, loss_G_A)
-    #     self.save_model('netG_B', folder_name, epoch + 1, netG_B, optimizer_G, loss_G_B)
-    #     self.save_model('netD_A', folder_name, epoch + 1, netD_A, optimizer_D, loss_D_A)
-    #     self.save_model('netD_B', folder_name, epoch + 1, netD_B, optimizer_D, loss_D_B)
+        self.write_to_stat(epoch, iter)
+        save_name = '{:03d}epoch_{:04d}step'.format(epoch + 1, iter + 1)
+        self.plot_cycle(0, save_name)
+
+    def visual_val(self,epoch,idx):
+        save_name = '{:03d}epoch_{:02d}'.format(epoch + 1, idx+1)
+        self.plot_cycle(0,save_name,0,True)
+
+    def save_models(self, epoch):
+        self.save_net('netG_A', epoch + 1, self.netG_A, self.optimizer_G, self.loss_G_A)
+        self.save_net('netG_B', epoch + 1, self.netG_B, self.optimizer_G, self.loss_G_B)
+        self.save_net('netD_A', epoch + 1, self.netD_A, self.optimizer_D, self.loss_D_A)
+        self.save_net('netD_B', epoch + 1, self.netD_B, self.optimizer_D, self.loss_D_B)
