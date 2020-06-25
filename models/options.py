@@ -1,7 +1,6 @@
 import argparse
 from datetime import datetime
 import os
-# import torch
 class ParamOptions():
     """This class defines options used during both training and test time.
     It also implements several helper functions such as parsing, printing, and saving the options.
@@ -39,27 +38,22 @@ class ParamOptions():
         parser.add_argument('--z', type=float, default=0.1, help='propagation distance')
         parser.add_argument('--adjust_lr_epoch', type=int, default=30, help='set the learning rate to the initial learning rate decayed by 10 every certain epochs')
         parser.add_argument('--log_note', type=str, default=' ', help='run note which will be saved to the log file')
-
+        parser.add_argument('--save_model_freq_epoch', type=int, default=10, help='frequency of saving models (epoch)')
+        parser.add_argument('--print_loss_freq_iter', type=int, default=20, help='frequency of print loss (iteration)')
+        parser.add_argument('--save_cycleplot_freq_iter', type=int, default=100, help='freqency of save cycle plots for train images')
+        parser.add_argument('--save_val_freq_epoch',type=int, default=1, help='frequency of save cycle plots for validation images')
         self.initialized = True
         return parser
 
     def gather_options(self):
-
-        if not self.initialized:  # check if it has been initialized
+        if not self.initialized: 
             parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,add_help=False)
             parser = self.initialize(parser)
-
         opt, _ = parser.parse_known_args()
         self.parser = parser
         return parser.parse_args()
 
     def parse(self):
-        """Parse our options, create checkpoints directory suffix, and set up gpu device."""
         opt = self.gather_options()
-
-
         self.opt = opt
         return self.opt
-
-# opt = ParamOptions().parse()
-# print(opt)
