@@ -156,7 +156,7 @@ class TrainModel(ABC):
 
     def standard_channels_realB(self):
         real_B_re = (self.real_B_re_rc - self.reals_mean) / self.reals_std
-        real_B_im = (self.real_B_im_rc - self.imags_mean) / self.images_std
+        real_B_im = (self.real_B_im_rc - self.imags_mean) / self.imags_std
         real_B = torch.stack((real_B_re, real_B_im), 1)
         return real_B
     def standard_channelsB_basic(self,layers_B):
