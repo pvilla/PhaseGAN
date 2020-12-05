@@ -36,7 +36,7 @@ class TrainModel(ABC):
         self.images_mean,self.images_std,self.reals_mean,self.reals_std,self.imags_mean,self.imags_std = opt.image_stats
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print('device:{}'.format(self.device))
-        self.model_init_type = 'normal'
+        self.model_tt_type = 'normal'
         self.criterionBSE = nn.BCELoss()
         self.criterionCycle = nn.L1Loss()
         self.isTrain = not opt.isTest
@@ -50,12 +50,11 @@ class TrainModel(ABC):
         self.img_names = ['real_A', 'fake_B', 'prop_A', 'rec_A', 'real_B', 'prop_B', 'fake_A', 'rec_B']
 
     def get_current_losses(self):
-        """Return traning losses / errors. train.py will print out these errors on console, and save them to a file"""
         errors_list = OrderedDict()
         for name in self.loss_names:
             if isinstance(name, str):
                 errors_list[name] = float(
-                    getattr(self, 'loss_' + name))  # float(...) works for both scalar tensor and float number
+                    getattr(self, 'loss_' + name))
         return errors_list
 
     def save_parameters(self):
@@ -107,7 +106,7 @@ class TrainModel(ABC):
     def get_NLdnet(self, num_input=1):
         dnet = NLayerDiscriminator(num_input)
         dnet.eval()
-        dnet.apply(weights_init)
+        init_weights(dnet, self.model_init_type, init_gain=0.02)
         return dnet
 
     def create_dir_if_not_exist(self, path):
@@ -179,8 +178,6 @@ class TrainModel(ABC):
 
     def FRCLoss(self, img1, img2):
         nz,nx,ny= [torch.tensor(i, device=self.device) for i in img1.shape]
-        # nx = torch.tensor(256.0, device=self.device);
-        # ny = torch.tensor(256, device=self.device);
         rnyquist = nx//2
         x = torch.cat((torch.arange(0, nx / 2), torch.arange(-nx / 2, 0))).to(self.device)
         y = x
@@ -299,7 +296,6 @@ class TrainModel(ABC):
         self.optimizer_G.zero_grad()
         self.backward_G()
         self.optimizer_G.step()
-
 
     def write_to_stat(self, epoch,iter):
         with open(self.save_stats, "a+") as f:

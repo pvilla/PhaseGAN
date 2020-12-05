@@ -37,7 +37,7 @@ class Propagator():
         return torch.cat([back, front], axis)
 
     def batch_fftshift2d(self,x):
-        # PyTorchSteerablePyramid
+        # Provided by PyTorchSteerablePyramid
         real, imag = torch.unbind(x, -1)
         for dim in range(1, len(real.size())):
             n_shift = real.size(dim)//2

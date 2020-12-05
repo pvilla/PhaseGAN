@@ -1,19 +1,16 @@
-import os
 import h5py
-import numpy as np
 import torch
 from pathlib import Path
 from torch.utils import data
 
 class Dataset2channel(data.Dataset):
-
+"""Dataloader for h5 files. It is based on hdf5_dataset by Branislav Holländer"""
     def __init__(self, file_path, recursive, load_data, data_cache_size=3, transform=None):
         super().__init__()
         self.data_info = []
         self.data_cache = {}
         self.data_cache_size = data_cache_size
         self.transform = transform
-
         p = Path(file_path)
         assert (p.is_dir())
         if recursive:
@@ -29,7 +26,7 @@ class Dataset2channel(data.Dataset):
     def __getitem__(self, index):
 
         x = self.get_data("intensity", index)
-        if self.transform:
+        if self.transform: # Customized transform could be used here for data augmentation
             x = self.transform(x)
         else:
             x = torch.from_numpy(x)
@@ -46,18 +43,11 @@ class Dataset2channel(data.Dataset):
 
     def _add_data_infos(self, file_path, load_data):
         with h5py.File(file_path,'r') as h5_file:
-            # Walk through all groups, extracting datasets
             for gname, group in h5_file.items():
                 for dname, ds in group.items():
-                    # if data is not loaded its cache index is -1
                     idx = -1
                     if load_data:
-                        # add data to the data cache
                         idx = self._add_to_cache(ds.value, file_path)
-
-                    # type is derived from the name of the dataset; we expect the dataset
-                    # name to have a name such as 'data' or 'label' to identify its type
-                    # we also store the shape of the data in case we need it
                     self.data_info.append(
                         {'file_path': file_path, 'type': dname, 'shape': ds[()].shape, 'cache_idx': idx})
 
@@ -65,13 +55,8 @@ class Dataset2channel(data.Dataset):
         with h5py.File(file_path,'r') as h5_file:
             for gname, group in h5_file.items():
                 for dname, ds in group.items():
-                    # add data to the data cache and retrieve
-                    # the cache index
                     idx = self._add_to_cache(ds[()], file_path)
-
-                    # find the beginning index of the hdf5 file we are looking for
                     file_idx = next(i for i, v in enumerate(self.data_info) if v['file_path'] == file_path)
-
                     # the data info should have the same index since we loaded it in the same way
                     self.data_info[file_idx + idx]['cache_idx'] = idx
 
@@ -90,9 +75,6 @@ class Dataset2channel(data.Dataset):
                 for di in self.data_info]
 
     def _add_to_cache(self, data, file_path):
-        """Adds data to the cache and returns its index. There is one cache
-        list for every file_path, containing all datasets in that file.
-        """
         if file_path not in self.data_cache:
             self.data_cache[file_path] = [data]
         else:
@@ -100,16 +82,12 @@ class Dataset2channel(data.Dataset):
         return len(self.data_cache[file_path]) - 1
 
     def get_data_infos(self, type):
-
         data_info_type = [di for di in self.data_info if di['type'] == type]
         return data_info_type
 
     def get_data(self, type, i):
-
         fp = self.get_data_infos(type)[i]['file_path']
         if fp not in self.data_cache:
             self._load_data(fp)
-
-        # get new cache_idx assigned by _load_data_info
         cache_idx = self.get_data_infos(type)[i]['cache_idx']
         return self.data_cache[fp][cache_idx]
