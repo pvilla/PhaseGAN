@@ -2,7 +2,7 @@
 PhaseGAN is a deep-learning phase-retrieval approach allowing the use of unpaired datasets and includes the physics of image formation. Please check out our [PhaseGAN paper](https://arxiv.org/abs/2011.08660) for more details.  
 
 <p align="center">
-<img src="imgs/Main.png"  width="500"/>
+<img src="imgs/Main.png"/>
 </p>
 
 The training data should be kept in ./dataset. 
