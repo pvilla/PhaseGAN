@@ -1,7 +1,7 @@
 # PhaseGAN: A deep-learning phase-retrieval approach for unpaired datasets
 PhaseGAN is a deep-learning phase-retrieval approach allowing the use of unpaired datasets and includes the physics of image formation. Please check out our [PhaseGAN paper](https://arxiv.org/abs/2011.08660) for more details.  
 
-<img src="imgs/Schema.png" width="500">
+<img src="imgs/Schema.png" align="center" width="500">
 
 The training data should be kept in ./dataset. 
 We used .h5 data format for the original training. Customized dataloader could be used for the training with other data formats. 
