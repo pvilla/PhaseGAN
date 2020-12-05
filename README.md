@@ -1,7 +1,9 @@
 # PhaseGAN: A deep-learning phase-retrieval approach for unpaired datasets
 PhaseGAN is a deep-learning phase-retrieval approach allowing the use of unpaired datasets and includes the physics of image formation. Please check out our [PhaseGAN paper](https://arxiv.org/abs/2011.08660) for more details.  
 
-<img src="imgs/Schema.png" align="center" width="500">
+<p align="center">
+<img src="imgs/Main.png"  width="500"/>
+</p>
 
 The training data should be kept in ./dataset. 
 We used .h5 data format for the original training. Customized dataloader could be used for the training with other data formats. 
@@ -19,6 +21,6 @@ If you use this code for your research, please cite our paper.
   journal={arXiv preprint arXiv:2011.08660},
   year={2020}
 }
-
+```
 
 Our code is based on [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) and [TernausNet](https://github.com/ternaus/TernausNet).
