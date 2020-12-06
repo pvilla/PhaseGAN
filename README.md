@@ -3,11 +3,54 @@ PhaseGAN is a deep-learning phase-retrieval approach allowing the use of unpaire
 
 <p align="center">
 <img src="imgs/Main.png"/>
+<img src="imgs/Cycle.png"/>
 </p>
 
-The training data should be kept in ./dataset. 
-We used .h5 data format for the original training. Customized dataloader could be used for the training with other data formats. 
-To run the training: python3 train.py, results will be saved in ./results/fig. 
+### Colab Notebook
+PhaseGAN Tutorial [Google Colab](https://colab.research.google.com/github/pvilla/PhaseGAN/blob/master/PhaseGAN_Notebook.ipynb) | [Code](https://github.com/pvilla/PhaseGAN/blob/master/PhaseGAN_Notebook.ipynb)
+
+### Getting Started
+#### Prerequisites
+
+- Linux (not tested for MacOS or Windows)
+- Python3
+- NVIDIA GPU (CPU not tested)
+
+####Installation
+
+Clone this repo:
+
+```
+git clone https://github.com/pvilla/PhaseGAN.git
+cd PhaseGAN
+```
+
+In order to install the required python packages run (in a new virtual environment):
+
+```
+pip install -r requirements.txt
+```
+
+#### PhaseGAN training
+For the training, our provided data loader [Dataset2channel.py](https://github.com/pvilla/PhaseGAN/blob/master/dataset/Dataset2channel.py) support loading data with HDF5 format. An example of the dataset structure could be find in [Example dataset folder](https://github.com/pvilla/PhaseGAN/tree/master/dataset) and [PhaseGAN validation dataset](https://drive.google.com/drive/folders/1rKTZYJa54WeG-2TikoXpdRcqTiSQ-Ps5?usp=sharing).
+We used hdf5 data format for the original training. For the training with other data formats, you may want to create a customized data loader. 
+results will be saved in ./results/fig. 
+
+
+
+To run the training:
+
+`python3 train.py`
+
+For more training options:
+
+`python3 train.py --help`
+
+
+The training results will be saved in: `./results/fig/run_name/train`.
+The training parameters and losses will be saved to a txt file here: `./results/fig/run_name/log.txt`.
+The models will be saved in `./results/fig/run_name/save.`
+
 
 
  

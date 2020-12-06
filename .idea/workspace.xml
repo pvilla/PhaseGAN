@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f8c47340-773e-42a6-85a5-1ca073de1e4f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/Dataset2channel.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/Dataset2channel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/discriminator.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/discriminator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/initialization.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/initialization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/networks.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/networks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/prop.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/prop.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +51,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="641" y="333" width="630" height="415" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1607269806588">
+      <screen x="0" y="24" width="1920" height="1032" />
+    </state>
+    <state x="641" y="333" width="630" height="415" key="#com.intellij.fileTypes.FileTypeChooser/0.24.1920.1032@0.24.1920.1032" timestamp="1607269806588" />
     <state x="99" y="124" width="1722" height="833" key="DiffContextDialog" timestamp="1607209615813">
       <screen x="0" y="24" width="1920" height="1032" />
     </state>
@@ -63,9 +63,9 @@
       <screen x="0" y="24" width="1920" height="1032" />
     </state>
     <state x="743" y="298" width="426" height="484" key="FileChooserDialogImpl/0.24.1920.1032@0.24.1920.1032" timestamp="1607209615339" />
-    <state x="602" y="368" key="com.intellij.ide.util.TipDialog" timestamp="1607205092107">
+    <state x="602" y="368" key="com.intellij.ide.util.TipDialog" timestamp="1607268925600">
       <screen x="0" y="24" width="1920" height="1032" />
     </state>
-    <state x="602" y="368" key="com.intellij.ide.util.TipDialog/0.24.1920.1032@0.24.1920.1032" timestamp="1607205092107" />
+    <state x="602" y="368" key="com.intellij.ide.util.TipDialog/0.24.1920.1032@0.24.1920.1032" timestamp="1607268925600" />
   </component>
 </project>
