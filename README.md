@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ### PhaseGAN training
 For the training, our provided data loader [Dataset2channel.py](https://github.com/pvilla/PhaseGAN/blob/master/dataset/Dataset2channel.py) support loading data with HDF5 format. An example of the dataset structure could be find in [Example dataset folder](https://github.com/pvilla/PhaseGAN/tree/master/dataset/example_dataset) and [PhaseGAN validation dataset (Google Drive)](https://drive.google.com/drive/folders/1rKTZYJa54WeG-2TikoXpdRcqTiSQ-Ps5?usp=sharing).
-Please note that ground truth images are provided for validation purpose, but we never use it as references in the unpaired training. 
+Please note that ground truth images are provided for validation purposes, but we never use it as references in the unpaired training. 
 
 We used hdf5 data format for the original training. For the training with other data formats, you may want to create a customized data loader. 
 
