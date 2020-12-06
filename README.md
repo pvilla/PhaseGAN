@@ -37,7 +37,6 @@ Please note that ground truth images are provided for validation purposes, but w
 
 We used hdf5 data format for the original training. For the training with other data formats, you may want to create a customized data loader. 
 
-
 To run the training:
 
 `python3 train.py`
