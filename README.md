@@ -1,6 +1,6 @@
-# PhaseGAN
+# PhaseGAN: A deep-learning phase-retrieval approach for unpaired datasets
 PhaseGAN is a deep-learning phase-retrieval approach allowing the use of unpaired datasets and includes the physics of image formation. 
-This repository contains code for the paper [PhaseGAN: A deep-learning phase-retrieval approach for unpaired datasets](https://arxiv.org/abs/2011.08660).
+For more detailed information about PhaseGAN training and performance, please refer to the [PhaseGAN paper](https://arxiv.org/abs/2011.08660).
 
 <p align="center">
 <img src="imgs/Main.png"/>
@@ -15,7 +15,7 @@ PhaseGAN Tutorial [Google Colab](https://colab.research.google.com/github/pvilla
 
 - Linux (not tested for MacOS or Windows)
 - Python3
-- NVIDIA GPU (CPU not tested)
+- NVIDIA GPU (not tested for CPU)
 
 ### Installation
 
@@ -63,5 +63,5 @@ If you use this code for your research, please cite our paper.
   year={2020}
 }
 ```
-
+## Acknowledgments
 Our code is based on [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) and [TernausNet](https://github.com/ternaus/TernausNet).
