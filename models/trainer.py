@@ -36,7 +36,7 @@ class TrainModel(ABC):
         self.images_mean,self.images_std,self.reals_mean,self.reals_std,self.imags_mean,self.imags_std = opt.image_stats
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         print('device:{}'.format(self.device))
-        self.model_tt_type = 'normal'
+        self.model_init_type = 'normal'
         self.criterionBSE = nn.BCELoss()
         self.criterionCycle = nn.L1Loss()
         self.isTrain = not opt.isTest
