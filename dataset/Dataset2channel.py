@@ -4,7 +4,7 @@ from pathlib import Path
 from torch.utils import data
 
 class Dataset2channel(data.Dataset):
-"""Dataloader for h5 files. It is based on hdf5 dataset by B. Holländer"""
+    """Dataloader for h5 files. It is based on hdf5 dataset by B. Holländer"""
     def __init__(self, file_path, recursive, load_data, data_cache_size=3, transform=None):
         super().__init__()
         self.data_info = []
