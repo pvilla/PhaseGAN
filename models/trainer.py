@@ -6,7 +6,7 @@ from abc import ABC
 from models.networks import PRNet
 from models.prop import Propagator
 from models.discriminator import NLayerDiscriminator
-from models.initialization import init_weights, weights_init
+from models.initialization import init_weights
 from dataset.Dataset2channel import *
 import matplotlib.pyplot as plt
 
