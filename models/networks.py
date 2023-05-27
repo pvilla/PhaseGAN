@@ -79,7 +79,40 @@ class UNet11(nn.Module):
         dec1 = self.dec1(torch.cat([dec2, conv1], 1))
         return self.final(dec1)
 
+class UNetSim(nn.Module):
+    """Pretrained U-Net generator based on TernausNet"""
+    def __init__(self, num_filters=32, pretrained=False, num_out =1):
+        """
+        if pretrained:
+            False - no pre-trained network is used
+            True  - encoder is pre-trained with VGG11
+        """
+        super().__init__()
+
+        self.pool = nn.MaxPool2d(2, 2)
+        self.encoder = models.vgg11(pretrained=pretrained).features
+        self.conv321 = ConvRelu(1, 3)
+        self.relu = self.encoder[1]
+        self.conv1 = self.encoder[0]
+        self.conv2 = self.encoder[3]
+        self.conv3s = self.encoder[6]
+        self.conv3 = self.encoder[8]
+        self.center = DecoderBlock(num_filters * 4, num_filters * 2, num_filters * 1)
+        self.dec3 = DecoderBlock(num_filters * (4 + 1), num_filters * 1, num_filters * 1)       #in,middle,out
+        self.dec1 = ConvRelu(num_filters * (2 + 1), num_filters//2)
+        self.final = nn.Conv2d(num_filters//2, num_out, kernel_size=1)
+
+    def forward(self, x):
+        conv321 = self.conv321(x)
+        conv1 = self.relu(self.conv1(conv321)) # 3 - 64
+        conv2 = self.relu(self.conv2(self.pool(conv1))) # 64 - 128
+        center = self.center(self.pool(conv2)) # 128 - 64 - 32
+        dec3 = self.dec3(torch.cat([center, conv2], 1)) # 128+32 - 32 - 32
+        dec1 = self.dec1(torch.cat([dec3, conv1], 1))   # 64+32 - 16
+        out = self.final(dec1) # 16 - 1
+        return out
+
 def PRNet(pretrained=False, num_out = 1, **kwargs):
-    model = UNet11(pretrained=pretrained, num_out = num_out, **kwargs)
+    model = UNetSim(pretrained=pretrained, num_out = num_out, **kwargs)
     # model = eHoloNet(pretrained=pretrained,is_deconv=True, **kwargs)
     return model
