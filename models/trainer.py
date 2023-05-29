@@ -122,10 +122,10 @@ class TrainModel(ABC):
             os.makedirs(path)
 
     def init_model(self):
-        self.netG_A = self.get_model(num_out=2).to(self.device)
-        self.netG_B = self.get_model(num_out=1).to(self.device)
-        self.netD_A = self.get_NLdnet(2).to(self.device)
-        self.netD_B = self.get_NLdnet().to(self.device)
+        self.netG_A = nn.DataParallel(self.get_model(num_out=2)).to(self.device)
+        self.netG_B = nn.DataParallel(self.get_model(num_out=1)).to(self.device)
+        self.netD_A = nn.DataParallel(self.get_NLdnet(2)).to(self.device)
+        self.netD_B = nn.DataParallel(self.get_NLdnet()).to(self.device)
         self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()), lr=self.lr_g, betas=(self.beta1, 0.999))
         self.optimizer_D = torch.optim.Adam(itertools.chain(self.netD_A.parameters(), self.netD_B.parameters()), lr=self.lr_d, betas=(self.beta1, 0.999))
         self.train_loader, self.test_loader = self.load_data()
@@ -268,10 +268,13 @@ class TrainModel(ABC):
         self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * self.lambda_B
         self.loss_G_B = self.GANLoss(self.netD_B(self.fake_A), True) * self.lambda_GB
         self.loss_cycle_A = self.criterionCycle(self.rec_A, self.real_A) * self.lambda_A
-        self.loss_fscA = self.lambda_fscA * self.FRCLoss(self.rec_A.squeeze(), self.real_A.squeeze())
-        self.loss_fscB = self.lambda_fscB / 2 * (
-                self.FRCLoss(self.rec_B[:, 0, :, :].squeeze(), self.real_B[:, 0, :, :].squeeze()) + self.FRCLoss(
-            self.rec_B[:, 1, :, :].squeeze(),  self.real_B[:, 1, :, :].squeeze()))
+        self.loss_fscA = 0
+        self.loss_fscB = 0
+        if self.lambda_fscA + self.lambda_fscB > 0:
+            self.loss_fscA = self.lambda_fscA * self.FRCLoss(self.rec_A.squeeze(), self.real_A.squeeze())
+            self.loss_fscB = self.lambda_fscB / 2 * (
+                    self.FRCLoss(self.rec_B[:, 0, :, :].squeeze(), self.real_B[:, 0, :, :].squeeze()) + self.FRCLoss(
+                self.rec_B[:, 1, :, :].squeeze(),  self.real_B[:, 1, :, :].squeeze()))
         self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_fscA + self.loss_fscB
         self.loss_G.backward()
         if self.clip_max != 0:
